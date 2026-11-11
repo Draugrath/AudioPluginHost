@@ -1,7 +1,6 @@
 # Audio Plugin Host
 
-SKSE plugin that hosts VST3 effect plugins inside Skyrim. It inserts them on the game's XAudio2 mastering voice and processes the final mix in real time, with a window in SKSE Menu Framework and each plugin's own interface in a window over the game.
-
+SKSE plugin that hosts VST3 effect plugins inside Skyrim. 
 ## Features
 
 - Loads 64-bit VST3 effects from `C:\Program Files\Common Files\VST3`, `Data/SKSE/Plugins/AudioPluginHost/VST3` and one folder of your choice
