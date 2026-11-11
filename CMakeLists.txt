@@ -18,7 +18,7 @@ if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 endif()
 
-# Keep local paths out of the binary (same scheme as Audio Equalizer).
+# Keep local paths out of the binary.
 set(EXTERN_DIR "${CMAKE_SOURCE_DIR}/extern")
 set(LIB_DIR "${EXTERN_DIR}")
 if(NOT EXISTS "${LIB_DIR}/CommonLibSSE-NG/CMakeLists.txt" AND EXISTS "${CMAKE_SOURCE_DIR}/../WaterOnSteroids/extern/CommonLibSSE-NG/CMakeLists.txt")

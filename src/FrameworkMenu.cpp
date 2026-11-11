@@ -206,8 +206,7 @@ namespace Menu
 			SetWindowFontScale(fontScale * a_scale);
 			if (IsItemHovered(0)) {
 				SetTooltip("%s", "The level of each channel after the plugins, in dB below full scale (0 = the loudest possible).\n"
-				                 "The white mark is the highest level of the last moments. CLIP: a plugin pushed the sound over full scale.\n"
-				                 "Audio Equalizer and Dynamic Compressor, if installed, come after this point.");
+				                 "The white mark is the highest level of the last moments. CLIP: a plugin pushed the sound over full scale.");
 			}
 			return loudest;
 		}
@@ -381,8 +380,7 @@ namespace Menu
 				                   "a third of the CPU). The meter shows left and right as you hear them.\n"
 				                   "Off: the plugins process the game's 6 channels.\n"
 				                   "Without plugins both sound the same. Every plugin loads again when you switch, with its settings.\n"
-				                   "With Audio Equalizer or Dynamic Compressor installed: they then get all sound on the front pair, about 10 dB\n"
-				                   "louder than before, so their meters and limiter read higher.",
+				                   "Other mods that process the game's sound after this one then get it on the front pair only, about 10 dB louder.",
 					note.empty() ? "" : ("\n\n" + note).c_str());
 			}
 			SameLine(0.0f, -1.0f);
@@ -463,7 +461,7 @@ namespace Menu
 				Rack::Add(view.available[chosen]);
 			}
 			EndDisabled();
-			Tip("Adds the plugin at the end of the chain. Plugins run top to bottom, before Audio Equalizer.");
+			Tip("Adds the plugin at the end of the chain. Sound goes through the plugins from top to bottom.");
 			SameLine(0.0f, -1.0f);
 			BeginDisabled(view.scanning);
 			if (Button(view.scanning ? "Scanning..." : "Rescan")) {

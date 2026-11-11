@@ -11,7 +11,7 @@ SKSE plugin that hosts VST3 effect plugins inside Skyrim. It inserts them on the
 - Latency and CPU per plugin, total latency in milliseconds and frames, output peak meter
 - The chain and every plugin's state are saved and loaded with the game
 - A plugin that faults while processing is switched off instead of taking the game down
-- Shares the mastering voice's effect chain with Audio Equalizer (plugins first, equalizer after); this needs an Audio Equalizer version newer than 1.0.2
+- Shares the mastering voice's effect chain with other SKSE plugins that announce their effect the same way, instead of replacing it
 
 ## Requirements
 
