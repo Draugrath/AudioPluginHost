@@ -1,0 +1,2 @@
+Put .vst3 effect plugins (files or folders) here, or install them normally: Audio Plugin Host also
+finds everything in C:\Program Files\Common Files\VST3. Then press Rescan in the in-game window.
