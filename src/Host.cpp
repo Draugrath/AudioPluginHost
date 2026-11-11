@@ -249,6 +249,27 @@ namespace
 		logger::info("Saved {} slot(s).", a_slots.size());
 	}
 
+	using SetLevel_t = std::int32_t (*)(void*, HWND, std::uint32_t);
+	SetLevel_t        originalSetLevel = nullptr;
+	std::atomic<bool> keepShared{ false };
+
+	std::int32_t KeepShared(void* a_device, HWND a_window, std::uint32_t a_flags)
+	{
+		constexpr std::uint32_t kExclusive = 0x1, kShared = 0x2, kMouse = 0x12;
+		if (keepShared.load() && (a_flags & kExclusive)) {
+			REX::W32::DIDEVCAPS caps{};
+			caps.size = sizeof(caps);
+			if (static_cast<REX::W32::IDirectInputDevice8A*>(a_device)->GetCapabilities(&caps) >= 0 && (caps.devType & 0xFF) == kMouse) {
+				a_flags = (a_flags & ~kExclusive) | kShared;
+				static std::atomic<int> told{ 0 };
+				if (told.fetch_add(1) < 5) {
+					logger::info("The game asked for the mouse in exclusive mode; kept it shared for the plugin windows.");
+				}
+			}
+		}
+		return originalSetLevel(a_device, a_window, a_flags);
+	}
+
 	void ShareMouse(bool a_share)
 	{
 		auto* tasks = SKSE::GetTaskInterface();
@@ -256,6 +277,9 @@ namespace
 			return;
 		}
 		tasks->AddTask([a_share] {
+			if (!a_share) {
+				CursorGuard::ShowOnThisThread(false);
+			}
 			auto* input = RE::BSInputDeviceManager::GetSingleton();
 			auto* mouse = input ? input->GetMouse() : nullptr;
 			auto* main = RE::Main::GetSingleton();
@@ -265,6 +289,16 @@ namespace
 				return;
 			}
 			constexpr std::uint32_t kExclusive = 0x1, kShared = 0x2, kForeground = 0x4;
+			if (!originalSetLevel) {
+				auto** table = *reinterpret_cast<void***>(device);
+				DWORD  old = 0;
+				if (VirtualProtect(&table[13], sizeof(void*), PAGE_READWRITE, &old)) {
+					originalSetLevel = reinterpret_cast<SetLevel_t>(table[13]);
+					table[13] = reinterpret_cast<void*>(&KeepShared);
+					VirtualProtect(&table[13], sizeof(void*), old, &old);
+				}
+			}
+			keepShared = a_share;
 			device->Unacquire();
 			const auto result = device->SetCooperativeLevel(main->wnd, (a_share ? kShared : kExclusive) | kForeground);
 			device->Acquire();
@@ -291,7 +325,7 @@ namespace
 			if (want) {
 				static const std::size_t redirected = [] {
 					const auto count = CursorGuard::Install();
-					logger::info("Pointer guard: {} SetCursor import(s) redirected.", count);
+					logger::info("Pointer guard: {} SetCursor / ShowCursor import(s) redirected.", count);
 					return count;
 				}();
 				(void)redirected;
@@ -448,6 +482,13 @@ namespace Host
 			CursorGuard::Protect(GetCurrentThreadId());
 			editorsOpen = a_open;
 			UpdateMouse();
+		};
+		config.onIdle = [] {
+			if (const int change = CursorGuard::Tick()) {
+				if (auto* tasks = SKSE::GetTaskInterface()) {
+					tasks->AddTask([show = change > 0] { CursorGuard::ShowOnThisThread(show); });
+				}
+			}
 		};
 		config.onSave = [](const std::vector<Rack::Saved>& a_slots, bool a_states) {
 			if (a_states) {

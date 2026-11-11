@@ -38,6 +38,7 @@ namespace Rack
 
 		std::function<void(bool a_warning, const std::string& a_text)>     log;
 		std::function<void(bool a_open)>                                   onEditors;
+		std::function<void()>                                              onIdle;
 		std::function<void(const std::vector<Saved>& a_slots, bool a_states)> onSave;
 	};
 

@@ -285,7 +285,7 @@ namespace Rack
 			Publish();
 			RefreshView();
 			while (!quit.load()) {
-				MsgWaitForMultipleObjectsEx(1, &wake, editorsShown ? 50 : 250, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+				MsgWaitForMultipleObjectsEx(1, &wake, editorsShown ? 15 : 250, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
 				MSG msg;
 				while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
 					TranslateMessage(&msg);
@@ -305,6 +305,9 @@ namespace Rack
 					}
 				}
 				ShowEditors();
+				if (config.onIdle) {
+					config.onIdle();
+				}
 				RefreshView();
 			}
 			const bool safe = [] {
