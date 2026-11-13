@@ -12,7 +12,7 @@
 namespace AudioChain
 {
 	inline constexpr std::uint32_t kAnnounce = 0x41434831;
-	inline constexpr const char*   kPeers[]{ "AudioEqualizer", "AudioPluginHost", "DynamicCompressor" };
+	inline constexpr const char*   kPeers[]{ "AudioEqualizer", "AudioPluginHost" };
 
 	struct Announcement
 	{

@@ -21,8 +21,8 @@ endif()
 # Keep local paths out of the binary.
 set(EXTERN_DIR "${CMAKE_SOURCE_DIR}/extern")
 set(LIB_DIR "${EXTERN_DIR}")
-if(NOT EXISTS "${LIB_DIR}/CommonLibSSE-NG/CMakeLists.txt" AND EXISTS "${CMAKE_SOURCE_DIR}/../WaterOnSteroids/extern/CommonLibSSE-NG/CMakeLists.txt")
-    set(LIB_DIR "${CMAKE_SOURCE_DIR}/../WaterOnSteroids/extern")
+if(NOT EXISTS "${LIB_DIR}/CommonLibSSE-NG/CMakeLists.txt" AND EXISTS "${CMAKE_SOURCE_DIR}/../extern/CommonLibSSE-NG/CMakeLists.txt")
+    set(LIB_DIR "${CMAKE_SOURCE_DIR}/../extern")
 endif()
 get_filename_component(LIB_DIR "${LIB_DIR}" REALPATH)
 
